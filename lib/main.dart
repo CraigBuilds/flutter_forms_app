@@ -168,6 +168,7 @@ class CheckboxFormField extends FormField<bool> {
   }) : super(
     initialValue: initialValue,
     builder: (field) {
+      debugPrint('Rebuilding CheckboxFormField; value=${field.value}'); //this is rebuilt when the FormField's internal state changes. It's handled by the built in StatefulWidget stuff, not my root ValueListenableBuilder.
       return CheckboxListTile(
         value: field.value ?? false,
         title: title,
