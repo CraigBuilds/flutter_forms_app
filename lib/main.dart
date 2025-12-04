@@ -137,22 +137,22 @@ Widget buildFormContent(GlobalKey<FormState> formKey, FormData state) {
     child: Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        TextFormField(
+        Debug(child: TextFormField(
           initialValue: "Foo",
           decoration: const InputDecoration(labelText: 'Text'),
           onSaved: (value) {
             state.textValue = value ?? '';
           },
-        ),
+        )),
         const SizedBox(height: 8),
-        CheckboxFormField(
+        Debug(child: CheckboxFormField(
           initialValue: false,
           title: const Text('Check me'),
           onSaved: (value) {
             state.checkedValue = value ?? false;
           },
-        ),
-      ],
+        )),
+      ]
     ),
   );
 }
@@ -175,4 +175,20 @@ class CheckboxFormField extends FormField<bool> {
       );
     },
   );
+}
+
+// A small wrapper widget that prints a debug message whenever it rebuilds 
+class Debug extends StatelessWidget {
+  final Widget child;
+
+  const Debug({
+    super.key,
+    required this.child,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    debugPrint('Rebuilding ${child.runtimeType}');
+    return child;
+  }
 }
