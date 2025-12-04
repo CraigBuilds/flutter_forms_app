@@ -14,17 +14,21 @@ class Entries {
   ValueNotifier<List<FormData>> get listenable => items;
 }
 
+// Rebuild the whole of MyApp when entries change,
 void main() {
   final entries = Entries();
   runApp(
     ValueListenableBuilder(
       valueListenable: entries.listenable,
-      builder: (_,_,_) => MyApp(entries: entries) // Rebuild the whole of MyApp when entries change,
+      builder: (_,_,_) => MyApp(entries: entries)
     )
   );
 }
 
-// --- MyApp is a pure representation of the app state (Entries) ---
+// 
+//--- MyApp is a pure representation of the app state (Entries) ---
+//
+
 class MyApp extends StatelessWidget {
   final Entries entries;
   const MyApp({super.key, required this.entries});
@@ -38,6 +42,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
+// A simple home page showing a list of saved form data (built from entries.list) and a button to add more (opens the form dialog)
 class HomePage extends StatelessWidget {
   final Entries entries;
   const HomePage({super.key, required this.entries});
@@ -54,8 +59,11 @@ class HomePage extends StatelessWidget {
   }
 }
 
+//
 // --- A ListView Showing Saved Form Data ---
+//
 
+// A dumb widget that just builds a ListView from a list of FormData
 ListView buildFormDataListView(List<FormData> formData) {
   return ListView.builder(
     itemCount: formData.length,
@@ -66,6 +74,7 @@ ListView buildFormDataListView(List<FormData> formData) {
   );
 }
 
+// A dumb widget that just builds a ListTile from a FormData
 ListTile buildListTile(FormData data) {
   return ListTile(
     title: Row(
@@ -81,11 +90,16 @@ ListTile buildListTile(FormData data) {
   );
 }
 
+//
 // --- The Form Dialog Implementation ---
+//
 
+// A dumb dialog that shows a simple form with a text field and a checkbox.
+// It doesn't do any state management itself, it just calls onSubmit with the filled FormData when submitted.
+// It needs to hold a FormData instance to store the form data while editing (before submission).
 Future<void> showSimpleFormDialog({required BuildContext ctx, required void Function(FormData) onSubmit}) {
   final formKey = GlobalKey<FormState>(); //so the form content can be saved from an action button
-  final state = FormData(); //The form needs extra state because the text can be edited and the checkbox toggled, before it is submitted, and we need to be able to render that.
+  final state = FormData();
 
   return showDialog<void>(
     context: ctx,
@@ -95,16 +109,16 @@ Future<void> showSimpleFormDialog({required BuildContext ctx, required void Func
         content: buildFormContent(formKey, state),
         actions: [
           TextButton(
-            onPressed: () => Navigator.of(ctx).pop(),
             child: const Text('Cancel'),
+            onPressed: () => Navigator.of(ctx).pop(),
           ),
           ElevatedButton(
+            child: const Text('Submit'),
             onPressed: () {
               formKey.currentState!.save();
               onSubmit(state);
               Navigator.of(ctx).pop();
             },
-            child: const Text('Submit'),
           ),
         ],
       );
@@ -112,6 +126,7 @@ Future<void> showSimpleFormDialog({required BuildContext ctx, required void Func
   );
 }
 
+// A dumb widget that just builds the form content given a FormData instance to store the data into
 Widget buildFormContent(GlobalKey<FormState> formKey, FormData state) {
   return Form(
     key: formKey,
@@ -138,6 +153,7 @@ Widget buildFormContent(GlobalKey<FormState> formKey, FormData state) {
   );
 }
 
+// A specialized FormField for CheckboxListTile, similar to Flutter's built-in TextFormField
 class CheckboxFormField extends FormField<bool> {
   CheckboxFormField({
     super.key,
