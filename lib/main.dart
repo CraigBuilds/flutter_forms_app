@@ -130,6 +130,7 @@ Future<void> showSimpleFormDialog({required BuildContext ctx, required void Func
 }
 
 // A dumb widget that just builds the form content given a FormData instance to store the data into
+// TextFormField and CheckboxFormField are stateful widgets, so they know when to rebuild themselves. They do not need any external state management/reactivity.
 Widget buildFormContent(GlobalKey<FormState> formKey, FormData state) {
   return Form(
     key: formKey,
