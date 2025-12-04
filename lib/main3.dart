@@ -7,7 +7,7 @@ void foo() {
   final RecordAB record = (a: 1, b: 2);
   debugPrint('Constructed Record = $record');
   final newRecord = printThenDoFn(copyWithIncrementedFields, record);
-  debugPrint('After mutation, Record = $newRecord');
+  debugPrint('After transformation, Record = $newRecord');
 }
 
 RecordAB copyWithIncrementedFields(RecordAB record) {
