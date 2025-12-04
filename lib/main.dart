@@ -20,7 +20,10 @@ void main() {
   runApp(
     ValueListenableBuilder(
       valueListenable: entries.listenable,
-      builder: (_,_,_) => MyApp(entries: entries)
+      builder: (_,_,_) {
+        debugPrint('Rebuilding MyApp with ${entries.list.length} entries');
+        return MyApp(entries: entries);
+      }
     )
   );
 }
