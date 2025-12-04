@@ -102,8 +102,48 @@ ListTile buildListTile(FormData data) {
 
 
 Future<void> showSimpleFormDialog({required BuildContext ctx, required void Function(FormData) onSubmit}) {
+  final formKey = GlobalKey<FormBuilderState>();
+  
   return showDialog(
     context: ctx,
-    builder: (ctx) => Placeholder()
+    builder: (ctx) => AlertDialog(
+      title: const Text('Add Entry'),
+      content: FormBuilder(
+        key: formKey,
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            FormBuilderTextField(
+              name: 'textValue',
+              decoration: const InputDecoration(labelText: 'Text Value'),
+            ),
+            FormBuilderCheckbox(
+              name: 'checkedValue',
+              title: const Text('Checked'),
+              initialValue: false,
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        TextButton(
+          onPressed: () => Navigator.of(ctx).pop(),
+          child: const Text('Cancel'),
+        ),
+        TextButton(
+          onPressed: () {
+            if (formKey.currentState?.saveAndValidate() ?? false) {
+              final values = formKey.currentState!.value;
+              final formData = FormData()
+                ..textValue = values['textValue'] ?? ''
+                ..checkedValue = values['checkedValue'] ?? false;
+              onSubmit(formData);
+              Navigator.of(ctx).pop();
+            }
+          },
+          child: const Text('Submit'),
+        ),
+      ],
+    ),
   );
 }
